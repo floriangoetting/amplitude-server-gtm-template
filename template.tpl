@@ -367,13 +367,25 @@ const postBody = {
   events: [finalEvent]
 }; 
 
-sendHttpRequest(HTTP_ENDPOINT, (statusCode, headers, body) => {
+sendHttpRequest(
+  HTTP_ENDPOINT, {
+    headers: {
+      'content-type': 'application/json'
+    },
+    method: 'POST',
+    timeout: 5000
+  },
+  JSON.stringify(postBody)
+).then((result) => {
+  const statusCode = result.statusCode;
   if (statusCode >= 400) {
-    data.gtmOnFailure();
-  } else {
-    data.gtmOnSuccess();
+    return data.gtmOnFailure();
   }
-}, {headers: {'content-type': 'application/json'}, method: 'POST', timeout: 5000}, JSON.stringify(postBody));
+  return data.gtmOnSuccess();
+}, (rejectedValue) => {
+  logAmplitude('Request failed with ' + JSON.stringify(rejectedValue));
+  return data.gtmOnFailure();
+});
 
 
 ___SERVER_PERMISSIONS___
