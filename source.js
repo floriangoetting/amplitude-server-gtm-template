@@ -86,12 +86,12 @@ if (!eventType) {
 const baseEvent = {
   device_id: deviceId,
   event_type: eventType,
-  time: timestamp,
+  time: (data.customTimestamp ? data.customTimestamp : timestamp),
   event_properties: getEventProps(),
   user_properties: getUserProps(),
   ip: userIp,
   session_id: sessionId,
-  insert_id: data.customInsertID ? data.customInsertID : deviceId + eventName + timestamp
+  insert_id: (data.customInsertID ? data.customInsertID : deviceId + eventName + timestamp)
 };
 
 if (userId) baseEvent.user_id = userId;
